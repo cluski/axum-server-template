@@ -1,0 +1,46 @@
+use config::Config;
+use serde::{Deserialize, Serialize};
+use std::ops::Deref;
+use std::sync::{Arc, LazyLock};
+
+pub static APP_CONFIG: LazyLock<AppConfig> = LazyLock::new(get_config);
+
+pub fn get_config() -> AppConfig {
+    let app_config = AppConfig::try_load().expect("Failed to load config");
+    app_config
+}
+
+#[derive(Debug)]
+pub struct AppConfig {
+    pub inner: Arc<AppConfigInner>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AppConfigInner {
+    pub server: Server,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Server {
+    pub port: u16,
+}
+
+impl AppConfig {
+    pub fn try_load() -> Result<AppConfig, config::ConfigError> {
+        let config = Config::builder()
+            .add_source(config::File::with_name("config/app.yaml"))
+            .build()?
+            .try_deserialize::<AppConfigInner>()?;
+        Ok(AppConfig {
+            inner: Arc::new(config),
+        })
+    }
+}
+
+impl Deref for AppConfig {
+    type Target = AppConfigInner;
+
+    fn deref(&self) -> &Self::Target {
+        &self.inner
+    }
+}
