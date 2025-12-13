@@ -12,7 +12,7 @@ pub struct TestHelper {
 
 impl TestHelper {
     pub async fn new_and_spawn_server() -> Result<Self, Report> {
-        let app_config = AppConfig::try_load()?;
+        let app_config = AppConfig::try_load0("config/app-test.yaml")?;
         let listener = TcpListener::bind("127.0.0.1:0").await?;
 
         let port = listener.local_addr()?.port();

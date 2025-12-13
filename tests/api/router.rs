@@ -37,14 +37,3 @@ async fn test_router_by_client() -> Result<(), Report> {
 
     Ok(())
 }
-
-
-#[tokio::test]
-async fn test_router_by_client2() -> Result<(), Report> {
-    let test_helper = TestHelper::new_and_spawn_server().await?;
-    let client = test_helper.client;
-    let resp: serde_json::Value = client.get("/health").await?;
-    assert_eq!(resp["status"], "healthy");
-
-    Ok(())
-}
