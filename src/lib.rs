@@ -4,10 +4,12 @@ mod tracing;
 
 use std::net::SocketAddr;
 
-use crate::{config::APP_CONFIG, router::get_router, tracing::init_tracing};
+use crate::{config::APP_CONFIG, tracing::init_tracing};
 use ::tracing::info;
 use rootcause::prelude::Report;
 use tokio::net::TcpListener;
+
+pub use router::get_router;
 
 #[allow(unused)]
 pub async fn start_server() -> Result<(), Report> {
