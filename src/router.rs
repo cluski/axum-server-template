@@ -1,10 +1,11 @@
 use axum::{
-    Router,
+    Json, Router,
     body::Body,
     extract::DefaultBodyLimit,
     http::{HeaderName, Method, Request},
     routing::get,
 };
+use serde_json::json;
 use tower::ServiceBuilder;
 use tower_http::{
     cors::{self, CorsLayer},
@@ -61,6 +62,14 @@ pub fn get_router() -> Router {
             get(async || {
                 info!("hello api called");
                 "Hello, World!"
+            }),
+        )
+        .route(
+            "/health",
+            get(async || {
+                Json(json!({
+                    "status": "healthy",
+                }))
             }),
         )
         .layer(DefaultBodyLimit::max(100 * 1024 * 1024)) // 100MB 限制

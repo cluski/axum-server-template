@@ -9,6 +9,7 @@ use ::tracing::info;
 use rootcause::prelude::Report;
 use tokio::net::TcpListener;
 
+pub use config::AppConfig;
 pub use router::get_router;
 
 #[allow(unused)]
