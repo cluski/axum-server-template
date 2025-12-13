@@ -1,3 +1,5 @@
+use std::usize;
+
 use axum::{
     body::Body,
     http::{Request, StatusCode},
@@ -16,6 +18,8 @@ async fn test_router() {
     assert_eq!(resp.status(), StatusCode::OK);
 
     // 解析响应体并断言内容
-    let body = axum::body::to_bytes(resp.into_body(), 1024).await.unwrap();
+    let body = axum::body::to_bytes(resp.into_body(), usize::MAX)
+        .await
+        .unwrap();
     assert_eq!(body, "Hello, World!");
 }
