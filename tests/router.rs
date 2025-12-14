@@ -5,11 +5,14 @@ use axum::{
     http::{Request, StatusCode},
 };
 use axum_server_template::get_router;
+use serde_json::json;
 use tower::ServiceExt;
 
 use rootcause::Report;
 
-use crate::helper::TestHelper;
+mod helper;
+
+use helper::TestHelper;
 
 #[tokio::test]
 async fn test_router() {
@@ -33,7 +36,7 @@ async fn test_router_by_client() -> Result<(), Report> {
     let test_helper = TestHelper::new_and_spawn_server().await?;
     let client = test_helper.client;
     let resp: serde_json::Value = client.get("/health").await?;
-    assert_eq!(resp["status"], "healthy");
+    assert_eq!(resp, json!({"status": "healthy"}));
 
     Ok(())
 }
