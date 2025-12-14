@@ -17,12 +17,18 @@ pub struct AppConfig {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AppConfigInner {
-    pub server: Server,
+    pub server: ServerConfig,
+    pub log: LogConfig,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Server {
+pub struct ServerConfig {
     pub port: u16,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LogConfig {
+    pub dir: String,
 }
 
 impl AppConfig {
@@ -33,6 +39,7 @@ impl AppConfig {
     pub fn try_load0(file: &str) -> Result<AppConfig, config::ConfigError> {
         let config = Config::builder()
             .add_source(config::File::with_name(file))
+            .set_default("log.dir", "./logs")?
             .build()?
             .try_deserialize::<AppConfigInner>()?;
         Ok(AppConfig {

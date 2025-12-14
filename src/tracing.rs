@@ -6,6 +6,8 @@ use tracing_subscriber::{
     util::SubscriberInitExt,
 };
 
+use crate::config::APP_CONFIG;
+
 pub(crate) fn init_tracing() -> WorkerGuard {
     // env filter
     let env_filter = tracing_subscriber::EnvFilter::try_from_default_env()
@@ -19,7 +21,10 @@ pub(crate) fn init_tracing() -> WorkerGuard {
         .with_filter(env_filter.clone());
 
     // file appender layer for tracing-subscriber
-    let file_appender = tracing_appender::rolling::daily("./logs", "server.log");
+    let file_appender = tracing_appender::rolling::daily(
+        &APP_CONFIG.log.dir.clone(),
+        "server.log",
+    );
     let (non_blocking, guard) = tracing_appender::non_blocking(file_appender);
     let file_layer = fmt::layer()
         .with_writer(non_blocking)
